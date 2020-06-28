@@ -2,6 +2,18 @@
 
 Defines Wsh.FileSystem and Wsh.FileSystemExtra objects, and adds functions to handle file and directory. (similar to Node.js-FileSystem).
 
+## tuckn/Wsh series dependency
+
+[WshModeJs](https://github.com/tuckn/WshModeJs)  
+└─ [WshProcess](https://github.com/tuckn/WshProcess)  
+&emsp;&emsp;└─ WshFileSystem - This repository  
+&emsp;&emsp;&emsp;&emsp;└─ [WshOS](https://github.com/tuckn/WshOS)  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshPath](https://github.com/tuckn/WshPath)  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshUtil](https://github.com/tuckn/WshUtil)  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshPolyfill](https://github.com/tuckn/WshPolyfill)  
+
+The upper layer module can use all the functions of the lower layer module.
+
 ## Operating environment
 
 Works on JScript in Windows.
@@ -257,12 +269,7 @@ var readArray = fse.readCsvSync('D:\\logs.csv', { encoding: 'utf8' });
 Many other functions are added.
 See the [documentation](https://docs.tuckn.net/WshFileSystem) for more details.
 
-And you can also use all functions of dependency modules.
-
-- [WshPolyfill](https://docs.tuckn.net/WshPolyfill)
-- [WshUtil](https://docs.tuckn.net/WshUtil)
-- [WshPath](https://docs.tuckn.net/WshPath)
-- [WshOS](https://docs.tuckn.net/WshOS)
+And you can also use all functions of [tuckn/WshPolyfill](https://github.com/tuckn/WshPolyfill), [tuckn/WshUtil](https://github.com/tuckn/WshUtil), [tuckn/WshPath](https://github.com/tuckn/WshPath) and [tuckn/WshOS](https://github.com/tuckn/WshOS).
 
 ## Documentation
 
