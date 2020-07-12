@@ -66,7 +66,7 @@ This allows the following functions to be used in _.\MyScript.js_.
 
 ## Usage
 
-Now _.\MyScript.js_ (JScript ) can use the useful functions to handle file system.
+Now _.\MyScript.js_ (JScript) can use the useful functions to handle file system.
 for example Wsh.FileSystem,
 
 ```js

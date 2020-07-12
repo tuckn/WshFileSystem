@@ -184,6 +184,9 @@
    * fs.writeFileSync('D:\\my-script.wsf', writeData, {
    *   encoding: 'utf8', bom: true
    * });
+   *
+   * fs.writeFileSync('D:\\fixme.txt', '', { encoding: 'utf8' });
+   * // Thorws a error! Fix this (T_T)
    * @function writeFileSync
    * @memberof Wsh.FileSystem
    * @param {string} fpath - The file-path to write.
@@ -321,9 +324,10 @@
    * @example
    * var fs = Wsh.FileSystem; // Shorthand
    *
-   * fs.existsSync('D:\\Existing\\File.path'); // true
-   * fs.existsSync('D:\\NonExisting\\File.path'); // false
-   * fs.existsSync('\\\\MyComp\\Public\\Existing\\File.path'); // true
+   * fs.existsSync('D:\\ExistingDir'); // true
+   * fs.existsSync('D:\\ExistingDir\\File.path'); // true
+   * fs.existsSync('D:\\NonExistingDir\\File.path'); // false
+   * fs.existsSync('\\\\MyComp\\Public\\ExistingDir\\File.path'); // true
    * @function existsSync
    * @memberof Wsh.FileSystem
    * @param {string} fpath - The file-path to check.

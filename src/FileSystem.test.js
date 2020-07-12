@@ -113,7 +113,9 @@ describe('FileSystem', function () {
     });
   });
 
-  test('writeFileSync, Empty ""', function () {
+  test('writeFileSync', function () {
+    expect(_cb(fs.writeFileSync, 'C:\\NONE_EXISTING_DIR\\foo.txt', 'bar')).toThrowError();
+
     var tmpTxtPath = os.makeTmpPath('fs-writefile_', '.txt');
     // var readTxt;
 
@@ -141,8 +143,8 @@ describe('FileSystem', function () {
   // Read
 
   test('existsSync', function () {
-    expect(fs.existsSync(__filename)).toBe(true);
     expect(fs.existsSync(__dirname)).toBe(true);
+    expect(fs.existsSync(__filename)).toBe(true);
     expect(fs.existsSync(uncPath)).toBe(true);
     expect(fs.existsSync(tmpPathA)).toBe(false);
     // @note Testing symlink file/directory will be tested at "linkSync()"
