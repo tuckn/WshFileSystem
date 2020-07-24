@@ -1,7 +1,7 @@
 {
   "name": "@tuckn/WshFileSystem",
   "description": "Defines Wsh.FileSystem and Wsh.FileSystemExtra objects, and adds functions to handle file and directory. (similar to Node.js-FileSystem).",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Tuckn <tuckn333+github@gmail.com>",
   "private": false,
   "license": "MIT",
@@ -50,7 +50,7 @@
     "test:name:readdirSync": ".\\scripts\\Test FileSystem -t readdirSync$",
     "test:name:copyFileSync": ".\\scripts\\Test FileSystem -t copyFileSync$",
     "test:name:xcopySync": ".\\scripts\\Test FileSystem -t xcopySync$",
-    "test:name:linkSync": ".\\scripts\\Test FileSystem -t linkSync$",
+    "test:name:linkSync": ".\\scripts\\Test FileSystem -t ^^linkSync",
     "test:name:rmdirSync": ".\\scripts\\Test FileSystem -t rmdirSync$",
     "test:name:unlinkSync": ".\\scripts\\Test FileSystem -t unlinkSync$",
     "test:FileSystem": ".\\scripts\\Test FileSystem",

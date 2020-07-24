@@ -29,6 +29,7 @@
   var startsWith = util.startsWith;
   var endsWith = util.endsWith;
   var srrd = os.surroundPath;
+  var XCOPY = os.exefiles.xcopy;
 
   var fs = Wsh.FileSystem;
 
@@ -126,11 +127,11 @@
    * @returns {void}
    */
   fs.inspectPathWhetherMAX_PATH = function (fullPath) {
-    var functionName = 'fs.inspectPathWhetherMAX_PATH';
+    var FN = 'fs.inspectPathWhetherMAX_PATH';
     var pathLen = fullPath.length;
     if (pathLen > 255) {
       throw new Error('Error: [Too long file path!] Over 255 characters\n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
           + ' ' + pathLen + ' length "' + fullPath + '"');
     }
   }; // }}}
@@ -159,8 +160,8 @@
    * @returns {void}
    */
   fs.mkdirSync = function (dirPath/* , options */) {
-    var functionName = 'fs.mkdirSync';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
+    var FN = 'fs.mkdirSync';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
 
     fs.inspectPathWhetherMAX_PATH(dirPath);
     fso.CreateFolder(dirPath);
@@ -197,8 +198,8 @@
    * @returns {void}
    */
   fs.writeFileSync = function (fpath, data, options) {
-    var functionName = 'fs.writeFileSync';
-    if (!isString(fpath)) throwErrNonStr(functionName, fpath);
+    var FN = 'fs.writeFileSync';
+    if (!isString(fpath)) throwErrNonStr(FN, fpath);
     if (data === undefined) data = 'undefined'; // No error in Node.js
 
     var encoding = obtain(options, 'encoding', 'binary');
@@ -287,7 +288,7 @@
       strm = null;
     } catch (e) {
       throw new Error(insp(e) + '\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  file: "' + fpath + '"\n  encoding: "' + encoding + '"\n'
         + '  bom: "' + bom + '"\n  data: ' + data);
     }
@@ -362,9 +363,9 @@
    * @returns {object} - { isFile(), isDirectory(), isSymbolicLink() }
    */
   fs.statSync = function (fpath) {
-    var functionName = 'fs.statSync';
-    if (!isString(fpath)) throwErrNonStr(functionName, fpath);
-    if (!fs.existsSync(fpath)) throwErrNonExist(functionName, fpath);
+    var FN = 'fs.statSync';
+    if (!isString(fpath)) throwErrNonStr(FN, fpath);
+    if (!fs.existsSync(fpath)) throwErrNonExist(FN, fpath);
 
     return {
       isFile: function () {
@@ -417,9 +418,9 @@
    * @returns {unknown|string} - 'unknown' is the result of the typeof judgment of JScript. Means binary?
    */
   fs.readFileSync = function (fpath, options) {
-    var functionName = 'fs.readFileSync';
-    if (!isString(fpath)) throwErrNonStr(functionName, fpath);
-    if (!fs.statSync(fpath).isFile()) throwErrNonExist(functionName, fpath);
+    var FN = 'fs.readFileSync';
+    if (!isString(fpath)) throwErrNonStr(FN, fpath);
+    if (!fs.statSync(fpath).isFile()) throwErrNonExist(FN, fpath);
 
     var encoding = obtain(options, 'encoding', 'binary');
     var throws = obtain(options, 'throws', true);
@@ -456,7 +457,7 @@
     } catch (e) {
       if (throws) {
         throw new Error(insp(e) + '\n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
           + '  file: "' + fpath + '"\n  encoding: "' + encoding + '"\n');
       }
     }
@@ -486,9 +487,9 @@
    * @returns {(string[]|Object[])}
    */
   fs.getChildrenFiles = function (dirPath, options) {
-    var functionName = 'fs.getChildrenFiles';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fs.getChildrenFiles';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     var prefixDirName = obtain(options, 'prefixDirName', '');
 
@@ -543,7 +544,7 @@
       } catch (e) {
         if (!ignoresErr) {
           throw new Error(insp(e) + '\n'
-            + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+            + '  at ' + FN + ' (' + MODULE_TITLE + ')');
         } else {
           continue;
         }
@@ -564,9 +565,9 @@
    * @returns {(string[]|Object[])}
    */
   fs.getChildrenDirectories = function (dirPath, options) {
-    var functionName = 'fs.getChildrenDirectories';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fs.getChildrenDirectories';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     var prefixDirName = obtain(options, 'prefixDirName', '');
 
@@ -619,7 +620,7 @@
       } catch (e) {
         if (!ignoresErr) {
           throw new Error(insp(e) + '\n'
-            + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+            + '  at ' + FN + ' (' + MODULE_TITLE + ')');
         } else {
           continue;
         }
@@ -713,9 +714,9 @@
    * @returns {(string[]|Object[])}
    */
   fs.readdirSync = function (dirPath, options) {
-    var functionName = 'fs.readdirSync';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fs.readdirSync';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     var isOnlyFile = obtain(options, 'isOnlyFile', false);
     var isOnlyDir = obtain(options, 'isOnlyDir', false);
@@ -754,8 +755,8 @@
    * @returns {string[]} - The list of file paths that excluded symlinks.
    */
   fs.excludeSymboliclinkPaths = function (filePaths, options) {
-    var functionName = 'fs.excludeSymboliclinkPaths';
-    if (!isArray(filePaths)) throwErrNonArray(functionName, filePaths);
+    var FN = 'fs.excludeSymboliclinkPaths';
+    if (!isArray(filePaths)) throwErrNonArray(FN, filePaths);
 
     var ignoresErr = obtain(options, 'ignoresErr', false);
     var filteredDirPaths;
@@ -775,7 +776,7 @@
       } catch (e) {
         if (!ignoresErr) {
           throw new Error(insp(e) + '\n'
-            + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+            + '  at ' + FN + ' (' + MODULE_TITLE + ')');
         }
 
         return false;
@@ -801,9 +802,9 @@
    * @returns {string[]} - The list of full file paths.
    */
   fs.getAllChildrensFullPaths = function (dirPath, options) {
-    var functionName = 'fs.getAllChildrensFullPaths';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fs.getAllChildrensFullPaths';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     var mainCmd = 'dir';
     var args = [path.normalize(dirPath)];
@@ -818,7 +819,7 @@
     var retObj = os.execSync(mainCmd, args, { shell: true });
     if (retObj.exitCode !== CD.runs.ok) {
       throw new Error('Error: [Error Exit Code]\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  mainCmd: ' + mainCmd + '\n  args: ' + insp(args) + '\n'
         + '  exitCode: ' + retObj.exitCode + '\n'
         + '  stdout: ' + retObj.stdout + '\n'
@@ -860,14 +861,14 @@
    * @returns {void}
    */
   fs.copyFileSync = function (src, dest, flag) {
-    var functionName = 'fs.copyFileSync';
-    if (!isString(src)) throwErrNonStr(functionName, src);
-    if (!isString(dest)) throwErrNonStr(functionName, dest);
-    if (!fs.existsSync(src)) throwErrNonExist(functionName, src);
+    var FN = 'fs.copyFileSync';
+    if (!isString(src)) throwErrNonStr(FN, src);
+    if (!isString(dest)) throwErrNonStr(FN, dest);
+    if (!fs.existsSync(src)) throwErrNonExist(FN, src);
 
     if (flag === fs.constants.COPYFILE_EXCL && fs.existsSync(dest)) {
       throw new Error('Error: [EXIST]: file already exists\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  copyfile "' + src + '" -> "' + dest + '"');
     }
 
@@ -875,7 +876,7 @@
       fso.CopyFile(src, dest, CD.fso.overwrites.yes);
     } catch (e) {
       throw new Error(insp(e) + '\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  EPERM: operation not permitted, copyfile "' + src + '" -> "' + dest + '")');
     }
   }; // }}}
@@ -893,20 +894,22 @@
    * @memberof Wsh.FileSystem
    * @param {string} existingPath
    * @param {string} newPath
-   * @param {number} [msecTimeOut=10000] - default: 10sec
-   * @returns {boolean}
+   * @param {object} [options] - Optional parameters.
+   * @param {number} [options.msecTimeOut=10000] - default: 10sec
+   * @param {boolean} [options.isDryRun=false] - No execute, returns the string of command.
+   * @returns {boolean|string} - If isDryRun is true, returns string.
    */
-  fs.linkSync = function (existingPath, newPath, msecTimeOut) {
-    var functionName = 'fs.linkSync';
-    if (!isString(newPath)) throwErrNonStr(functionName, newPath);
-    if (!isString(existingPath)) throwErrNonStr(functionName, existingPath);
+  fs.linkSync = function (existingPath, newPath, options) {
+    var FN = 'fs.linkSync';
+    if (!isString(newPath)) throwErrNonStr(FN, newPath);
+    if (!isString(existingPath)) throwErrNonStr(FN, existingPath);
 
     if (fs.existsSync(newPath)) {
       throw new Error('Error: [EXIST]: file of directory already exists\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  newPath "' + newPath + '"');
     }
-    if (!fs.existsSync(existingPath)) throwErrNonExist(functionName, existingPath);
+    if (!fs.existsSync(existingPath)) throwErrNonExist(FN, existingPath);
 
     var mainCmd = 'mklink';
     var args = [];
@@ -918,17 +921,24 @@
       args = args.concat(['/D', newPath, existingPath]);
     } else {
       throw new Error('Error: [Unknwon file type]:\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  existingPath "' + existingPath + '"');
     }
 
-    os.runAsAdmin(mainCmd, args, { shell: true, winStyle: 'hidden' });
+    var isDryRun = obtain(options, 'isDryRun', false);
+
+    var retVal = os.runAsAdmin(mainCmd, args, {
+      shell: true,
+      winStyle: 'hidden',
+      isDryRun: isDryRun
+    });
+    if (isDryRun) return 'dry-run [' + FN + ']: ' + retVal;
 
     /*
      * @note Cannot catch an error and a termination, if current process is not running as administrator. Therefore, wait 10 sec for existing the link.
      */
 
-    msecTimeOut = isNumber(msecTimeOut) ? msecTimeOut : 10000;
+    var msecTimeOut = obtain(options, 'msecTimeOut', 10000);
     do {
       try {
         if (fs.existsSync(newPath)) return true;
@@ -963,23 +973,22 @@
    * @param {string} dest - The destination file/directory path.
    * @param {object} [options] - Optional parameters.
    * @param {boolean} [options.withStd=false]
-   * @returns {void|typeExecSyncReturn} - If withStd is true returns {@link https://docs.tuckn.net/WshUtil/Wsh.Constants.windowStyles.html|Wsh.OS.typeExecSyncReturn}.
+   * @param {boolean} [options.isDryRun=false] - No execute, returns the string of command.
+   * @returns {void|typeExecSyncReturn|string} - If withStd is true returns {@link https://docs.tuckn.net/WshUtil/Wsh.Constants.windowStyles.html|Wsh.OS.typeExecSyncReturn} or if isDryRun is true, returns string.
    */
   fs.xcopySync = function (src, dest, options) {
-    var functionName = 'fs.xcopySync';
-    if (!isString(src)) throwErrNonStr(functionName, src);
-    if (!isString(dest)) throwErrNonStr(functionName, dest);
-    if (!fs.existsSync(src)) throwErrNonExist(functionName, src);
+    var FN = 'fs.xcopySync';
+    if (!isString(src)) throwErrNonStr(FN, src);
+    if (!isString(dest)) throwErrNonStr(FN, dest);
+    if (!fs.existsSync(src)) throwErrNonExist(FN, src);
 
     var mainCmd = 'ECHO';
 
     var argStr = '';
     if (fs.statSync(src).isDirectory()) {
-      argStr += ' D|'
-        + os.exefiles.xcopy + ' ' + srrd(src) + ' ' + srrd(dest) + ' /E /I';
+      argStr += ' D|' + XCOPY + ' ' + srrd(src) + ' ' + srrd(dest) + ' /E /I';
     } else {
-      argStr += ' F|'
-        + os.exefiles.xcopy + ' ' + srrd(src) + ' ' + srrd(dest);
+      argStr += ' F|' + XCOPY + ' ' + srrd(src) + ' ' + srrd(dest);
     }
 
     argStr += ' /H /R /Y';
@@ -988,21 +997,35 @@
     // console.log(os.convToCmdCommand(mainCmd, argStr, { shell: true }));
 
     var withStd = obtain(options, 'withStd', false);
-    if (!withStd) {
-      var iRetVal = os.runSync(mainCmd, argStr, { shell: true, winStyle: 'hidden' });
-      if (iRetVal === CD.runs.ok) return;
+    var isDryRun = obtain(options, 'isDryRun', false);
+    var retVal;
 
-      throw new Error('Error [ExitCode is not Ok] "' + iRetVal + '"\n');
+    if (!withStd) {
+      retVal = os.runSync(mainCmd, argStr, {
+        shell: true,
+        winStyle: 'hidden',
+        isDryRun: isDryRun
+      });
+
+      if (isDryRun) return 'dry-run [' + FN + ']: ' + retVal;
+      if (retVal === CD.runs.ok) return;
+
+      throw new Error('Error [ExitCode is not Ok] "' + retVal + '"\n');
     } else {
-      var retObj = os.execSync(mainCmd, argStr, { shell: true });
-      if (retObj.exitCode === CD.runs.ok) return retObj;
+      retVal = os.execSync(mainCmd, argStr, {
+        shell: true,
+        isDryRun: isDryRun
+      });
+
+      if (isDryRun) return 'dry-run [' + FN + ']: ' + retVal;
+      if (retVal.exitCode === CD.runs.ok) return retVal;
 
       throw new Error('Error: [Error Exit Code]\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  mainCmd: ' + mainCmd + '\n  argStr: ' + argStr + '\n'
-        + '  exitCode: ' + retObj.exitCode + '\n'
-        + '  stdout: ' + retObj.stdout + '\n'
-        + '  stderr: ' + retObj.stderr);
+        + '  exitCode: ' + retVal.exitCode + '\n'
+        + '  stdout: ' + retVal.stdout + '\n'
+        + '  stderr: ' + retVal.stderr);
     }
   }; // }}}
 
@@ -1024,33 +1047,35 @@
    * fs.mkdirSync('R:\\NonExistingDir');
    * @function rmdirSync
    * @memberof Wsh.FileSystem
-   * @param {string} dirPath
+   * @param {string} dirPath - The directory path to delete.
    * @returns {void}
    */
   fs.rmdirSync = function (dirPath) {
-    var functionName = 'fs.rmdirSync';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fs.rmdirSync';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     try {
       fso.DeleteFolder(dirPath, CD.fso.force.yes);
     } catch (e) {
       /**
-       * fso.DeleteFolder can not delete the directory including symlinks! On the other hand, `rmdir` can delete a directory including symlinks, If its name has the last backslash.
+       * fso.DeleteFolder can not delete the directory including symlinks? On the other hand, `rmdir` can delete a directory including symlinks, If its name has the last backslash.
        * [ATTENTION] But! If it is the symlink directory, `rmdir` will even delete the files from which the link originated
        */
       try {
-        if (fs.statSync(dirPath).isSymbolicLink()) throw e;
-
         if (!endsWith(dirPath, path.sep)) dirPath += path.sep;
 
-        var iRetVal = os.runSync('rmdir', ['/S', '/Q', dirPath], { shell: true, winStyle: 'hidden' });
-        if (iRetVal === CD.runs.ok) return;
+        var retVal = os.runSync('rmdir', ['/S', '/Q', dirPath], {
+          shell: true,
+          winStyle: 'hidden'
+        });
 
-        throw new Error('Error [ExitCode is not Ok] "' + iRetVal + '"\n');
+        if (retVal === CD.runs.ok) return;
+
+        throw new Error('Error [ExitCode is not Ok] "' + retVal + '"\n');
       } catch (e) {
         throw new Error(insp(e) + '\n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
           + '  EPERM: operation not permitted, "' + dirPath + '"');
       }
     }
@@ -1071,15 +1096,15 @@
    * @returns {void}
    */
   fs.unlinkSync = function (fpath) {
-    var functionName = 'fs.unlinkSync';
-    if (!isString(fpath)) throwErrNonStr(functionName, fpath);
-    if (!fs.statSync(fpath).isFile()) throwErrNonExist(functionName, fpath);
+    var FN = 'fs.unlinkSync';
+    if (!isString(fpath)) throwErrNonStr(FN, fpath);
+    if (!fs.statSync(fpath).isFile()) throwErrNonExist(FN, fpath);
 
     try {
       fso.DeleteFile(fpath, CD.fso.force.yes);
     } catch (e) {
       throw new Error(insp(e) + '\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  EPERM: operation not permitted, unlink "' + fpath + '"');
     }
   }; // }}}

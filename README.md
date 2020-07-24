@@ -37,7 +37,7 @@ or
 > git submodule add https://github.com/tuckn/WshFileSystem.git ./WshModules/WshFileSystem
 ```
 
-(3) Include _.\WshFileSystem\dist\bundle.js_ into your .wsf file.
+(3) Include _.\\WshFileSystem\\dist\\bundle.js_ into your .wsf file.
 For Example, if your file structure is
 
 ```console
@@ -62,11 +62,11 @@ The content of above _Run.wsf_ is
 ```
 
 I recommend this .wsf file encoding to be UTF-8 [BOM, CRLF].
-This allows the following functions to be used in _.\MyScript.js_.
+This allows the following functions to be used in _.\\MyScript.js_.
 
 ## Usage
 
-Now _.\MyScript.js_ (JScript) can use the useful functions to handle file system.
+Now _.\\MyScript.js_ (JScript) can use the useful functions to handle file system.
 for example Wsh.FileSystem,
 
 ```js
@@ -271,7 +271,14 @@ var readArray = fse.readCsvSync('D:\\logs.csv', { encoding: 'utf8' });
 Many other functions are added.
 See the [documentation](https://docs.tuckn.net/WshFileSystem) for more details.
 
-And you can also use all functions of [tuckn/WshPolyfill](https://github.com/tuckn/WshPolyfill), [tuckn/WshUtil](https://github.com/tuckn/WshUtil), [tuckn/WshPath](https://github.com/tuckn/WshPath) and [tuckn/WshOS](https://github.com/tuckn/WshOS).
+### Dependency Modules
+
+You can also use the following useful functions in _.\\MyScript.js_ (JScript).
+
+- [tuckn/WshPolyfill](https://github.com/tuckn/WshPolyfill)
+- [tuckn/WshUtil](https://github.com/tuckn/WshUtil)
+- [tuckn/WshPath](https://github.com/tuckn/WshPath)
+- [tuckn/WshOS](https://github.com/tuckn/WshOS)
 
 ## Documentation
 

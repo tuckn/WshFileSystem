@@ -17,6 +17,7 @@ var fs = Wsh.FileSystem;
 var fse = Wsh.FileSystemExtra;
 
 var isSolidString = util.isSolidString;
+var CERTUTIL = os.exefiles.certutil;
 
 var _cb = function (fn/* , args */) {
   var args = Array.from(arguments).slice(1);
@@ -631,6 +632,10 @@ describe('FileSystemExtra', function () {
     // Create
     fs.mkdirSync(testDir);
     fs.writeFileSync(file1A, 'file1');
+
+    // dry-run
+    var retVal = fse.calcCryptHash(file1A, 'SHA256', { isDryRun: true });
+    expect(retVal).toContain(CERTUTIL + ' -hashfile ' + file1A + ' SHA256');
 
     hash = fse.calcCryptHash(file1A, 'SHA256');
     expect(isSolidString(hash)).toBe(true);

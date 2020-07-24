@@ -18,6 +18,8 @@ var os = Wsh.OS;
 var fs = Wsh.FileSystem;
 
 var isString = util.isString;
+var CMD = os.exefiles.cmd;
+var XCOPY = os.exefiles.xcopy;
 
 var _cb = function (fn/* , args */) {
   var args = Array.from(arguments).slice(1);
@@ -420,6 +422,8 @@ describe('FileSystem', function () {
   });
 
   test('linkSync, (Run as admin)', function () {
+    var retVal;
+
     // Confirm tmpA is not existing
     expect(fs.existsSync(tmpPathA)).toBe(false);
     expect(_cb(fs.statSync, tmpPathA)).toThrowError();
@@ -432,6 +436,13 @@ describe('FileSystem', function () {
     expect(statA.isFile()).toBe(false);
     expect(statA.isDirectory()).toBe(true); // Directory
     expect(statA.isSymbolicLink()).toBe(false);
+
+    // dry-run
+    retVal = fs.linkSync(tmpPathA, tmpPathB, { isDryRun: true });
+    expect(retVal).toContain(
+      CMD + ' /S /C"mklink /D ' + tmpPathB + ' ' + tmpPathA + '"'
+    );
+    expect(fs.existsSync(tmpPathB)).toBe(false);
 
     // Confirm tmpB is not existing
     expect(fs.existsSync(tmpPathB)).toBe(false);
@@ -481,27 +492,54 @@ describe('FileSystem', function () {
   });
 
   test('xcopySync', function () {
+    var retVal;
+
     var tmpDirPath = os.makeTmpPath('test-xcopySync_dir_');
     fs.mkdirSync(tmpDirPath);
 
     // Copies the file
     var tmpFilePath = path.join(tmpDirPath, 'tmp-file.wsf');
     expect(fs.existsSync(tmpFilePath)).toBe(false);
+
+    // dry-run
+    retVal = fs.xcopySync(__filename, tmpFilePath, { isDryRun: true });
+    expect(retVal).toContain(CMD + ' /S /C"ECHO  F|'
+      + XCOPY + ' ' + __filename + ' ' + tmpFilePath + ' /H /R /Y"');
+    expect(fs.existsSync(tmpFilePath)).toBe(false);
+
     expect(fs.xcopySync(__filename, tmpFilePath)).toBe(undefined);
     expect(fs.existsSync(tmpFilePath)).toBe(true);
     // Non Error
     expect(fs.xcopySync(__filename, tmpFilePath)).toBe(undefined);
 
     // With `withStd` option
-    var stdObj = fs.xcopySync(__filename, tmpFilePath, { withStd: true });
-    expect(stdObj.error).toBeDefined(false);
-    expect(stdObj.exitCode).toBe(0);
-    expect(stdObj.stdout).toBeDefined();
-    expect(stdObj.stderr).toBeDefined();
+
+    // dry-run
+    var tmpFilePath2 = tmpDirPath + '2';
+    retVal = fs.xcopySync(__filename, tmpFilePath2, {
+      withStd: true,
+      isDryRun: true
+    });
+    expect(retVal).toContain(CMD + ' /S /C"ECHO  F|'
+      + XCOPY + ' ' + __filename + ' ' + tmpFilePath2 + ' /H /R /Y"');
+    expect(fs.existsSync(tmpFilePath2)).toBe(false);
+
+    retVal = fs.xcopySync(__filename, tmpFilePath2, { withStd: true });
+    expect(retVal.error).toBeDefined(false);
+    expect(retVal.exitCode).toBe(0);
+    expect(retVal.stdout).toBeDefined();
+    expect(retVal.stderr).toBeDefined();
 
     // Copies the directory
     var tmpCopiedDir = os.makeTmpPath('test-xcopySync_copied-dir_');
     expect(fs.existsSync(tmpCopiedDir)).toBe(false);
+
+    // dry-run
+    retVal = fs.xcopySync(tmpDirPath, tmpCopiedDir, { isDryRun: true });
+    expect(retVal).toContain(CMD + ' /S /C"ECHO  D|'
+      + XCOPY + ' ' + tmpDirPath + ' ' + tmpCopiedDir + ' /E /I /H /R /Y"');
+    expect(fs.existsSync(tmpCopiedDir)).toBe(false);
+
     expect(fs.xcopySync(tmpDirPath, tmpCopiedDir)).toBe(undefined);
     expect(fs.existsSync(tmpCopiedDir)).toBe(true);
     // Non Error
@@ -523,17 +561,32 @@ describe('FileSystem', function () {
   // Delete
 
   test('rmdirSync', function () {
+    var errVals = [true, false, undefined, null, 0, 1, NaN, Infinity, [], {}];
+    errVals.forEach(function (val) {
+      expect(_cb(fs.rmdirSync, val)).toThrowError();
+    });
+
     var tmpDirPath = os.makeTmpPath('test-rmdirSync_dir_');
+    var retVal;
+
+    // [1]. dry-run
     fs.mkdirSync(tmpDirPath);
 
-    // Removes the directory
+    // dry-run -> but  run
+    retVal = fs.rmdirSync(tmpDirPath, { isDryRun: true });
+    expect(retVal).toBeUndefined();
+    expect(fs.existsSync(tmpDirPath)).toBe(false);
+
+    // [2]. Removes the directory
+    fs.mkdirSync(tmpDirPath);
+
     expect(fs.rmdirSync(tmpDirPath)).toBe(undefined);
     expect(fs.existsSync(tmpDirPath)).toBe(false);
 
-    // Checks a throwing Error
+    // Checks a throwing error when non existing
     expect(_cb(fs.rmdirSync, tmpDirPath)).toThrowError();
 
-    // Removes the directory including files
+    // [3]. Removes the directory including files
     fs.mkdirSync(tmpDirPath);
 
     var parentDir = path.join(tmpDirPath, 'parentDir');
@@ -545,14 +598,41 @@ describe('FileSystem', function () {
     var tmpFile = path.join(childDir, 'file.tmp');
     fso.CopyFile(__filename, tmpFile, CD.fso.overwrites.yes);
 
-    // Check if deleting the file throws an error
+    // Deletes the file
     expect(_cb(fs.rmdirSync, tmpFile)).toThrowError();
 
     expect(fs.rmdirSync(parentDir)).toBe(undefined);
 
-    noneStrVals.forEach(function (val) {
-      expect(_cb(fs.rmdirSync, val)).toThrowError();
-    });
+    // [4]. Symlink directory
+    var dirSymSrc = path.join(tmpDirPath, 'dirSymSrc');
+    fs.mkdirSync(dirSymSrc);
+
+    var dirSymDest = path.join(tmpDirPath, 'dirSymDest');
+    fs.linkSync(dirSymSrc, dirSymDest);
+
+    expect(fs.rmdirSync(dirSymDest)).toBe(undefined);
+    expect(fs.rmdirSync(dirSymSrc)).toBe(undefined);
+
+    // [5]. Including symlink file
+    var dirHasSymlink = path.join(tmpDirPath, 'dirHasSymlink');
+    fs.mkdirSync(dirHasSymlink);
+
+    var fileSymSrc = path.join(dirHasSymlink, 'fileSymSrc.tmp');
+    fso.CopyFile(__filename, fileSymSrc, CD.fso.overwrites.yes);
+
+    var fileSymDest = path.join(dirHasSymlink, 'symlink.file');
+    fs.linkSync(fileSymSrc, fileSymDest);
+
+    // // dry-run
+    // retVal = fs.rmdirSync(dirHasSymlink, { isDryRun: true });
+    // console.log(retVal);
+    // // expect(retVal).toContain(
+    // //   CMD + ' /S /C"mklink /D ' + tmpPathB + ' ' + tmpPathA + '"'
+    // // );
+    // expect(fs.existsSync(dirHasSymlink)).toBe(true);
+
+    expect(fs.rmdirSync(dirHasSymlink)).toBe(undefined);
+    expect(fs.existsSync(dirHasSymlink)).toBe(false);
 
     // Cleans
     expect(fs.rmdirSync(tmpDirPath)).toBe(undefined);

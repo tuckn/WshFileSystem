@@ -21,7 +21,7 @@
   var os = Wsh.OS;
   var fs = Wsh.FileSystem;
 
-  var objAssign = Object.assign;
+  var objAdd = Object.assign;
   var obtain = util.obtainPropVal;
   var isSolidArray = util.isSolidArray;
   var isSolidString = util.isSolidString;
@@ -31,6 +31,7 @@
   var hasIn = util.hasIn;
   var insp = util.inspect;
   var srrd = os.surroundPath;
+  var CERTUTIL = os.exefiles.certutil;
 
   var fse = Wsh.FileSystemExtra;
 
@@ -65,8 +66,8 @@
    * @returns {void}
    */
   fse.ensureDirSync = function (dirPath) {
-    var functionName = 'fse.ensureDirSync';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
+    var FN = 'fse.ensureDirSync';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
     if (fs.existsSync(dirPath) && fs.statSync(dirPath).isDirectory()) return;
 
     var dirFullPath = path.normalize(dirPath);
@@ -97,7 +98,7 @@
         }
       } catch (e) {
         throw new Error(insp(e) + '\n'
-            + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+            + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
             + '  Failed to create the directory "' + layer + '".\n'
             + '  dirPath: "' + dirPath + '"');
       }
@@ -137,10 +138,10 @@
    * @returns {void}
    */
   fse.copySync = function (src, dest, options) {
-    var functionName = 'fse.copySync';
-    if (!isString(src)) throwErrNonStr(functionName, src);
-    if (!isString(dest)) throwErrNonStr(functionName, dest);
-    if (!fs.existsSync(src)) throwErrNonExist(functionName, src);
+    var FN = 'fse.copySync';
+    if (!isString(src)) throwErrNonStr(FN, src);
+    if (!isString(dest)) throwErrNonStr(FN, dest);
+    if (!fs.existsSync(src)) throwErrNonExist(FN, src);
 
     var filter = obtain(options, 'filter', null);
     if (isFunction(filter) && !filter(src, dest)) return;
@@ -151,7 +152,7 @@
     if (!overwrite && fs.existsSync(dest)) {
       if (errorOnExist) {
         throw new Error('Error: [Already Existing] "' + dest + '"/n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')');
       }
       return;
     }
@@ -168,11 +169,11 @@
         fso.CopyFolder(src, dest, CD.fso.overwrites.yes);
       } else {
         throw new Error('ENOENT: no such file or directory, "' + src + '"\n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')');
       }
     } catch (e) {
       throw new Error(insp(e) + '\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
         + '  src: "' + src + '" -> dest: "' + dest + '"');
     }
   }; // }}}
@@ -202,10 +203,10 @@
    * @returns {string} - The directory path to unzip.
    */
   fse.unzipOfficeOpenXML = function (srcPath, destDir) {
-    var functionName = 'fse.unzipOfficeOpenXML';
-    if (!isSolidString(srcPath)) throwErrNonStr(functionName, srcPath);
-    if (!isSolidString(destDir)) throwErrNonStr(functionName, destDir);
-    if (!fs.existsSync(srcPath)) throwErrNonExist(functionName, srcPath);
+    var FN = 'fse.unzipOfficeOpenXML';
+    if (!isSolidString(srcPath)) throwErrNonStr(FN, srcPath);
+    if (!isSolidString(destDir)) throwErrNonStr(FN, destDir);
+    if (!fs.existsSync(srcPath)) throwErrNonExist(FN, srcPath);
 
     // Create temp dest
     var tmpDir = os.makeTmpPath('fse-unzipOfficeOpenXML_');
@@ -277,8 +278,8 @@
    * @returns {void}
    */
   fse.removeSync = function (fpath) {
-    var functionName = 'fse.removeSync';
-    if (!isString(fpath)) throwErrNonStr(functionName, fpath);
+    var FN = 'fse.removeSync';
+    if (!isString(fpath)) throwErrNonStr(FN, fpath);
     if (!fs.existsSync(fpath)) return;
 
     try {
@@ -290,11 +291,11 @@
         fs.rmdirSync(fpath);
       } else {
         throw new Error('ENOENT: no such file or directory, "' + fpath + '"\n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')');
       }
     } catch (e) {
       throw new Error(insp(e) + ' Failed to delete "' + fpath + '"\n'
-        + '  at ' + functionName + ' (' + MODULE_TITLE + ')');
+        + '  at ' + FN + ' (' + MODULE_TITLE + ')');
     }
   }; // }}}
 
@@ -323,7 +324,7 @@
 
     do {
       try {
-        fileData = fs.readFileSync(fpath, objAssign({}, options, { throws: true }));
+        fileData = fs.readFileSync(fpath, objAdd({}, options, { throws: true }));
         isRead = true;
       } catch (e) {
         msecTimeOut -= 300;
@@ -399,8 +400,8 @@
    * @returns {void}
    */
   fse.writeJsonSync = function (fpJson, obj, options) {
-    var functionName = 'fse.writeJsonSync';
-    if (!isString(fpJson)) throwErrNonStr(functionName, fpJson);
+    var FN = 'fse.writeJsonSync';
+    if (!isString(fpJson)) throwErrNonStr(FN, fpJson);
 
     // @note 空白""も受け入れるため、obtainは使用しない
     var indent = hasIn(options, 'indent') ? options.indent : 4;
@@ -442,9 +443,9 @@
    * @returns {any}
    */
   fse.readJsonSync = function (fpJson, options) {
-    var functionName = 'fse.readJsonSync';
-    if (!isString(fpJson)) throwErrNonStr(functionName, fpJson);
-    if (!fs.statSync(fpJson).isFile()) throwErrNonExist(functionName, fpJson);
+    var FN = 'fse.readJsonSync';
+    if (!isString(fpJson)) throwErrNonStr(FN, fpJson);
+    if (!fs.statSync(fpJson).isFile()) throwErrNonExist(FN, fpJson);
 
     var encoding = obtain(options, 'encoding', CD.ado.charset.utf8);
     var throws = obtain(options, 'throws', true);
@@ -484,9 +485,9 @@
    * @returns {void}
    */
   fse.writeCsvSync = function (csvpath, arrays, options) {
-    var functionName = 'fse.writeCsvSync';
-    if (!isSolidString(csvpath)) throwErrNonStr(functionName, csvpath);
-    if (!isSolidArray(arrays)) throwErrNonArray(functionName, arrays);
+    var FN = 'fse.writeCsvSync';
+    if (!isSolidString(csvpath)) throwErrNonStr(FN, csvpath);
+    if (!isSolidArray(arrays)) throwErrNonArray(FN, arrays);
 
     var stringified = util.stringify2DArrayToCsv(arrays, options);
 
@@ -517,8 +518,8 @@
    * @returns {Array} - The read array.
    */
   fse.readCsvSync = function (csvpath, options) {
-    var functionName = 'fse.readCsvSync';
-    if (!fs.existsSync(csvpath)) throwErrNonExist(functionName, csvpath);
+    var FN = 'fse.readCsvSync';
+    if (!fs.existsSync(csvpath)) throwErrNonExist(FN, csvpath);
 
     var encoding = obtain(options, 'encoding', CD.ado.charset.utf8);
     var throws = obtain(options, 'throws', true);
@@ -616,8 +617,8 @@
    * @returns {Array} - The array of objects.
    */
   fse.readCsvFileAsAssocArray = function (csvpath, options) {
-    var functionName = 'fse.readCsvFileAsAssocArray';
-    if (!fs.existsSync(csvpath)) throwErrNonExist(functionName, csvpath);
+    var FN = 'fse.readCsvFileAsAssocArray';
+    if (!fs.existsSync(csvpath)) throwErrNonExist(FN, csvpath);
 
     var arrays = fse.readCsvSync(csvpath, options);
 
@@ -749,9 +750,9 @@
    * @returns {object}
    */
   fse.dirTree = function (dirPath, options) {
-    var functionName = 'fse.dirTree';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fse.dirTree';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     var lines = fs.getAllChildrensFullPaths(dirPath, options);
     lines.pop(); // remove the last line as blank.
@@ -1026,9 +1027,9 @@ console.log(ctg);
    * @returns {string[]|object[]} - The array of files info.
    */
   fse.readdirSyncRecursively = function (dirPath, options) {
-    var functionName = 'fse.readdirSyncRecursively';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fse.readdirSyncRecursively';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     // Get the top files
     var rtnFiles = fs.readdirSync(dirPath, options);
@@ -1049,7 +1050,7 @@ console.log(ctg);
 
     subDirsNames.forEach(function (dirName) {
       var subFiles = fse.readdirSyncRecursively(path.join(dirPath, dirName),
-        objAssign({}, options,
+        objAdd({}, options,
           { prefixDirName: path.join(prefixDirName, dirName) }));
 
       rtnFiles = rtnFiles.concat(subFiles);
@@ -1072,9 +1073,9 @@ console.log(ctg);
    * @returns {Array}
    */
   fse.readdirSyncRecursivelyWithDIR = function (dirPath, options) {
-    var functionName = 'fse.readdirSyncRecursively';
-    if (!isString(dirPath)) throwErrNonStr(functionName, dirPath);
-    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(functionName, dirPath);
+    var FN = 'fse.readdirSyncRecursively';
+    if (!isString(dirPath)) throwErrNonStr(FN, dirPath);
+    if (!fs.statSync(dirPath).isDirectory()) throwErrNonExist(FN, dirPath);
 
     var command = 'dir ' + srrd(dirPath) + ' /B /N /S /O:N';
     // directory only
@@ -1084,7 +1085,7 @@ console.log(ctg);
     var retObj = os.execSync(exeCmd);
     if (retObj.exitCode !== CD.runs.ok) {
       throw new Error('Error: [ExitCode is not 0]\n'
-          + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
+          + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
           + '  command: ' + command + '\n'
           + '  exitCode: ' + retObj.exitCode + '\n'
           + '  stdout: ' + retObj.stdout + '\n'
@@ -1181,20 +1182,22 @@ console.log(ctg);
    * @memberof Wsh.FileSystemExtra
    * @param {string} filepath - The file path to check.
    * @param {string} [algorithm=SHA256] - MD2, MD4, MD5, SHA1, SHA256, SHA384, SHA512
-   * @returns {string} - The cryptographic hash.
+   * @param {object} [options] - Optional parameters.
+   * @param {boolean} [options.isDryRun=false] - No execute, returns the string of command.
+   * @returns {string} - The cryptographic hash. if isDryRun is true, returns the command log string. Not execute.
    */
-  fse.calcCryptHash = function (filepath, algorithm) {
-    var functionName = 'fse.calcCryptHash';
-    if (!isString(filepath)) throwErrNonStr(functionName, filepath);
-    if (!fs.statSync(filepath).isFile()) throwErrNonExist(functionName, filepath);
-
-    var mainCmd = os.exefiles.certutil;
+  fse.calcCryptHash = function (filepath, algorithm, options) {
+    var FN = 'fse.calcCryptHash';
+    if (!isString(filepath)) throwErrNonStr(FN, filepath);
+    if (!fs.statSync(filepath).isFile()) throwErrNonExist(FN, filepath);
 
     var algo = isSolidString(algorithm) ? algorithm.toUpperCase() : 'SHA256';
     var args = ['-hashfile', filepath, algo];
+    var retVal;
 
-    var retObj;
     try {
+      var isDryRun = obtain(options, 'isDryRun', false);
+
       /**
        * This process is slow due to using certutil.exe. {@link https://technet.microsoft.com/ja-jp/library/cc732443(v=ws.10).aspx|Certutil}
        *
@@ -1217,10 +1220,15 @@ console.log(ctg);
        * stderr: ""
        */
 
-      retObj = os.execSync(mainCmd, args, { shell: false });
+      retVal = os.execSync(CERTUTIL, args, {
+        shell: false,
+        isDryRun: isDryRun
+      });
 
-      if (retObj.exitCode !== CD.runs.ok) {
-        throw new Error('Error: [ExitCode is ' + retObj.exitCode + ']\n');
+      if (isDryRun) return 'dry-run [' + FN + ']: ' + retVal;
+
+      if (retVal.exitCode !== CD.runs.ok) {
+        throw new Error('Error: [ExitCode is ' + retVal.exitCode + ']\n');
       }
     } catch (e) {
       // Copy the file to %TMP% and retry
@@ -1228,19 +1236,19 @@ console.log(ctg);
       fse.copySync(filepath, tmpFile);
       args = ['-hashfile', tmpFile, algo];
 
-      retObj = os.execSync(mainCmd, args, { shell: false });
+      retVal = os.execSync(CERTUTIL, args, { shell: false });
       fse.removeSync(tmpFile); // Clean
 
-      if (retObj.exitCode !== CD.runs.ok) {
+      if (retVal.exitCode !== CD.runs.ok) {
         throw new Error(insp(e) + '\n'
-            + '  at ' + functionName + ' (' + MODULE_TITLE + ')\n'
-            + '  exitCode: ' + retObj.exitCode + '\n'
-            + '  stdout: ' + retObj.stdout + '\n'
-            + '  stderr: ' + retObj.stderr);
+            + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
+            + '  exitCode: ' + retVal.exitCode + '\n'
+            + '  stdout: ' + retVal.stdout + '\n'
+            + '  stderr: ' + retVal.stderr);
       }
     }
 
-    return retObj.stdout.replace(/\r/g, '').split('\n')[1];
+    return retVal.stdout.replace(/\r/g, '').split('\n')[1];
   }; // }}}
 
   // fse.compareFilesOfModifiedDate  {{{
@@ -1259,9 +1267,9 @@ console.log(ctg);
    * @returns {boolean} - If the same date, return true.
    */
   fse.compareFilesOfModifiedDate = function (fpA, fpB) {
-    var functionName = 'fse.compareFilesOfModifiedDate';
-    if (!fs.statSync(fpA).isFile()) throwErrNonExist(functionName, fpA);
-    if (!fs.statSync(fpB).isFile()) throwErrNonExist(functionName, fpB);
+    var FN = 'fse.compareFilesOfModifiedDate';
+    if (!fs.statSync(fpA).isFile()) throwErrNonExist(FN, fpA);
+    if (!fs.statSync(fpB).isFile()) throwErrNonExist(FN, fpB);
 
     var srcDate = fso.GetFile(fpA).DateLastModified;
     var destDate = fso.GetFile(fpB).DateLastModified;
@@ -1294,9 +1302,9 @@ console.log(ctg);
    * @returns {boolean}
    */
   fse.isTheSameFile = function (fpA, fpB, algorithm) {
-    var functionName = 'fse.isTheSameFile';
-    if (!fs.statSync(fpA).isFile()) throwErrNonExist(functionName, fpA);
-    if (!fs.statSync(fpB).isFile()) throwErrNonExist(functionName, fpB);
+    var FN = 'fse.isTheSameFile';
+    if (!fs.statSync(fpA).isFile()) throwErrNonExist(FN, fpA);
+    if (!fs.statSync(fpB).isFile()) throwErrNonExist(FN, fpB);
 
     if (!isSolidString(algorithm) || algorithm.toUpperCase() === 'DATE') {
       return fse.compareFilesOfModifiedDate(fpA, fpB);
