@@ -1298,7 +1298,7 @@ console.log(ctg);
    * @memberof Wsh.FileSystemExtra
    * @param {string} fpA - A file path
    * @param {string} fpB - Another file path
-   * @param {string} [algorithm='date'] - date, MD2, MD4, MD5, SHA1, SHA256, SHA384, SHA512
+   * @param {string} [algorithm='date'] - 'date'(Modification), 'MD2', 'MD4', 'MD5', 'SHA1', 'SHA256', 'SHA384', 'SHA512'
    * @returns {boolean}
    */
   fse.isTheSameFile = function (fpA, fpB, algorithm) {
