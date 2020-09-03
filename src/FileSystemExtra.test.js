@@ -28,6 +28,7 @@ describe('FileSystemExtra', function () {
   var sample1CsvSjisCRLF = path.join(__dirname, 'assets', 'Sample1_SjisCRLF.csv');
   var sample1CsvUtf8bomCRLF = path.join(__dirname, 'assets', 'Sample1_Utf8bomCRLF.csv');
   var bookXlsx = path.join(__dirname, 'assets', 'Book1.xlsx');
+  var fileZeroSize = path.join(__dirname, 'assets', 'ZeroSizeFile');
   var noneStrVals = [true, false, undefined, null, 0, 1, NaN, Infinity, [], {}];
 
   test('ensureDirSync, removeSync', function () {
@@ -625,11 +626,19 @@ describe('FileSystemExtra', function () {
   });
 
   test('calcCryptHash', function () {
-    var testDir = os.makeTmpPath('fse-isTheSameFile_');
-    var file1A = path.join(testDir, 'file1A.txt');
+    noneStrVals.forEach(function (val) {
+      expect(_cb(fse.calcCryptHash, val)).toThrowError();
+    });
+
     var hash;
 
-    // Create
+    // Zero size
+    hash = fse.calcCryptHash(fileZeroSize, 'MD5');
+    expect(hash).toBe(0);
+
+    // Creates dummy files
+    var testDir = os.makeTmpPath('fse-isTheSameFile_');
+    var file1A = path.join(testDir, 'file1A.txt');
     fs.mkdirSync(testDir);
     fs.writeFileSync(file1A, 'file1');
 
@@ -647,10 +656,6 @@ describe('FileSystemExtra', function () {
 
     // Cleans
     fse.removeSync(testDir);
-
-    noneStrVals.forEach(function (val) {
-      expect(_cb(fse.calcCryptHash, val)).toThrowError();
-    });
   });
 
   test('isTheSameFile, compareFilesOfModifiedDate', function () {

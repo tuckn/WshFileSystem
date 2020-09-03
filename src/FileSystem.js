@@ -22,7 +22,6 @@
   var insp = util.inspect;
   var obtain = util.obtainPropVal;
   var isArray = util.isArray;
-  var isNumber = util.isNumber;
   var isString = util.isString;
   var isSolidString = util.isSolidString;
   var parseDate = util.createDateString;
@@ -343,57 +342,92 @@
 
   // fs.statSync {{{
   /**
+   * @typedef {object} typeFsStat
+   * @property {number} size
+   * @property {function} isFile
+   * @property {function} isDirectory
+   * @property {function} isSymbolicLink
+   * @property {Date} atime - The last time the file was accessed.
+   * @property {Date} mtime - The last time the file was modified.
+   * @property {Date} [ctime] - The last time the file status was changed.
+   * @property {Date} birthtime - The creation time of the file.
+   */
+
+  /**
    * Returns information about the file. Similar to {@link https://nodejs.org/api/fs.html#fs_fs_statsync_path_options|Node.js-Path}
    *
    * @example
    * var fs = Wsh.FileSystem; // Shorthand
    *
    * var stat = fs.statSync('D:\\My Dir\\File.path');
+   * stat.size; // 2345
    * stat.isFile(); // true
    * stat.isDirectory(); // false
    * stat.isSymbolicLink(); // false
+   * stat.atime; // Thu Sep 3 07:16:02 UTC+0900 2020,
+   * stat.mtime; // Sat Feb 3 07:18:51 UTC+0900 2018,
+   * stat.ctime; // null,
+   * stat.birthtime; // Thu Sep 3 07:16:02 UTC+0900 2020
    *
    * var stat = fs.statSync('D:\\Symlink Dir');
+   * stat.size; // 0
    * stat.isFile(); // false
    * stat.isDirectory(); // true
    * stat.isSymbolicLink(); // true
    * @function statSync
    * @memberof Wsh.FileSystem
    * @param {string} fpath - The file-path to check.
-   * @returns {object} - { isFile(), isDirectory(), isSymbolicLink() }
+   * @returns {typeFsStat} - An object provides information about a file.
    */
   fs.statSync = function (fpath) {
     var FN = 'fs.statSync';
     if (!isString(fpath)) throwErrNonStr(FN, fpath);
     if (!fs.existsSync(fpath)) throwErrNonExist(FN, fpath);
 
-    return {
-      isFile: function () {
-        return fso.FileExists(fpath);
-      },
-      isDirectory: function () {
-        return fso.FolderExists(fpath);
-      },
-      isSymbolicLink: function () {
-        var fObj;
-        if (fso.FileExists(fpath)) {
-          fObj = fso.GetFile(fpath);
-        } else if (fso.FolderExists(fpath)) {
-          fObj = fso.GetFolder(fpath);
-        }
-        var attr = fObj.Attributes + 0;
-        /* global FILE_ATTRIBUTE_SYMLINKD_DIR, FILE_ATTRIBUTE_SYMLINKD_FILE */
-        return (attr === FILE_ATTRIBUTE_SYMLINKD_DIR
-            || attr === FILE_ATTRIBUTE_SYMLINKD_FILE);
+    var fObj;
+    var size;
+    var isFile;
+    var isDir;
 
-        /**
-         * Old code. Use fsutil {@link https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/cc753059(v=ws.11)|MS Docs}
-         */
-        // var exeCmd = 'fsutil reparsepoint query "' + fpath + '"';
-        // var oExec = sh.execSync(exeCmd);
-        //
-        // return (oExec.stdout.indexOf(': Symbolic Link') !== -1);
-      }
+    if (fso.FileExists(fpath)) {
+      fObj = fso.GetFile(fpath);
+      size = fObj.Size;
+      isFile = true;
+      isDir = false;
+    } else if (fso.FolderExists(fpath)) {
+      fObj = fso.GetFolder(fpath);
+      size = 0;
+      isFile = false;
+      isDir = true;
+    } else {
+      // Throws a error
+    }
+
+    var attr = fObj.Attributes + 0;
+    /* global FILE_ATTRIBUTE_SYMLINKD_DIR, FILE_ATTRIBUTE_SYMLINKD_FILE */
+    var isSymlink = (attr === FILE_ATTRIBUTE_SYMLINKD_DIR || attr === FILE_ATTRIBUTE_SYMLINKD_FILE);
+    /**
+     * Old code. Use fsutil {@link https://docs.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/cc753059(v=ws.11)|MS Docs}
+     */
+    // var exeCmd = 'fsutil reparsepoint query "' + fpath + '"';
+    // var oExec = sh.execSync(exeCmd);
+    //
+    // return (oExec.stdout.indexOf(': Symbolic Link') !== -1);
+
+    var atime = new Date(fObj.DateLastAccessed); // Accessed Time
+    var mtime = new Date(fObj.DateLastModified); // Modified Time
+    var ctime = null; // Changed Time
+    var birthtime = new Date(fObj.DateCreated); // Creation Time
+
+    return {
+      size: size,
+      isFile: function () { return isFile; },
+      isDirectory: function () { return isDir; },
+      isSymbolicLink: function () { return isSymlink; },
+      atime: atime,
+      mtime: mtime,
+      ctime: ctime,
+      birthtime: birthtime
     };
   }; // }}}
 

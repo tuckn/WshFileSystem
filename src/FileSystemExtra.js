@@ -1162,7 +1162,7 @@ console.log(ctg);
 
   // fse.calcCryptHash  {{{
   /**
-   * Generates the cryptographic hash from the file.
+   * Generates the cryptographic hash from the file. If the file size is 0, returns 0.
    *
    * @example
    * var fse = Wsh.FileSystemExtra; // Shorthand
@@ -1178,18 +1178,25 @@ console.log(ctg);
    * fse.calcCryptHash('D:\File.txt', 'MD5');
    * // Returns:
    * // 51d52911dc0b646cfda6bb6a6ffa7525
+   *
+   * fse.calcCryptHash('D:\.gitkeep', 'MD5'); // The file size is zero
+   * // Returns: 0
    * @function calcCryptHash
    * @memberof Wsh.FileSystemExtra
    * @param {string} filepath - The file path to check.
    * @param {string} [algorithm=SHA256] - MD2, MD4, MD5, SHA1, SHA256, SHA384, SHA512
    * @param {object} [options] - Optional parameters.
+   * @param {object} [options.fsStatObj] - The object of fs.statSync returned.
    * @param {boolean} [options.isDryRun=false] - No execute, returns the string of command.
-   * @returns {string} - The cryptographic hash. if isDryRun is true, returns the command log string. Not execute.
+   * @returns {string} - The cryptographic hash or 0. if isDryRun is true, returns the command log string. Not execute.
    */
   fse.calcCryptHash = function (filepath, algorithm, options) {
     var FN = 'fse.calcCryptHash';
     if (!isString(filepath)) throwErrNonStr(FN, filepath);
-    if (!fs.statSync(filepath).isFile()) throwErrNonExist(FN, filepath);
+
+    var fStat = obtain(options, 'fsStatObj', fs.statSync(filepath));
+    if (!fStat.isFile()) throwErrNonExist(FN, filepath);
+    if (fStat.size === 0) return 0;
 
     var algo = isSolidString(algorithm) ? algorithm.toUpperCase() : 'SHA256';
     var args = ['-hashfile', filepath, algo];
@@ -1214,7 +1221,7 @@ console.log(ctg);
        *   CertUtil: プロセスはファイルにアクセスできません。別のプロセスが使用中です。"
        * stderr: ""
        *
-       *  // Error Pattern 2. ERROR_FILE_INVALID
+       *  // Error Pattern 2. ERROR_FILE_INVALID (file size 0)
        * stdout: "CertUtil: -hashfile コマンド エラーです: 0x800703ee (WIN32: 1006 ERROR_FILE_INVALID)
        *   CertUtil: ファイルを格納しているボリュームが外部的に変更されたため、開かれているファイルが無効になりました。"
        * stderr: ""
@@ -1232,7 +1239,7 @@ console.log(ctg);
       }
     } catch (e) {
       // Copy the file to %TMP% and retry
-      var tmpFile = os.tmpFile('fse-calcCryptHash_');
+      var tmpFile = os.makeTmpPath('fse-calcCryptHash_');
       fse.copySync(filepath, tmpFile);
       args = ['-hashfile', tmpFile, algo];
 
@@ -1264,20 +1271,23 @@ console.log(ctg);
    * @memberof Wsh.FileSystemExtra
    * @param {string} fpA - The file path to compare.
    * @param {string} fpB - Another file path.
+   * @param {object} [options] - Optional parameters.
+   * @param {object} [options.fsAStatObj] - The fs.stat object of fpA.
+   * @param {object} [options.fsBStatObj] - The fs.stat object of fpB.
    * @returns {boolean} - If the same date, return true.
    */
-  fse.compareFilesOfModifiedDate = function (fpA, fpB) {
+  fse.compareFilesOfModifiedDate = function (fpA, fpB, options) {
     var FN = 'fse.compareFilesOfModifiedDate';
+
+    var fAStat = obtain(options, 'fsAStatObj', fs.statSync(fpA));
     if (!fs.statSync(fpA).isFile()) throwErrNonExist(FN, fpA);
+
+    var fBStat = obtain(options, 'fsBStatObj', fs.statSync(fpB));
     if (!fs.statSync(fpB).isFile()) throwErrNonExist(FN, fpB);
 
-    var srcDate = fso.GetFile(fpA).DateLastModified;
-    var destDate = fso.GetFile(fpB).DateLastModified;
-    // DateLastModified 1970/1/1 0:00:00からのミリ秒単位
-    var diffMilliSec = Math.abs(Number(srcDate) - Number(destDate));
+    var diffMilliSec = Math.abs(Number(fAStat.mtime) - Number(fBStat.mtime));
 
-    // Covers the differences between file systems.
-    // FAT32とNTFSなどファイルシステムの違いをフォローする
+    // Covers the differences between file systems. e.g. FAT32 and NTFS
     return diffMilliSec < 3000; // Ignore difference to 3 sec
   }; // }}}
 
@@ -1303,13 +1313,21 @@ console.log(ctg);
    */
   fse.isTheSameFile = function (fpA, fpB, algorithm) {
     var FN = 'fse.isTheSameFile';
-    if (!fs.statSync(fpA).isFile()) throwErrNonExist(FN, fpA);
-    if (!fs.statSync(fpB).isFile()) throwErrNonExist(FN, fpB);
+
+    var fAStat = fs.statSync(fpA);
+    if (!fAStat.isFile()) throwErrNonExist(FN, fpA);
+
+    var fBStat = fs.statSync(fpB);
+    if (!fBStat.isFile()) throwErrNonExist(FN, fpB);
 
     if (!isSolidString(algorithm) || algorithm.toUpperCase() === 'DATE') {
-      return fse.compareFilesOfModifiedDate(fpA, fpB);
+      return fse.compareFilesOfModifiedDate(fpA, fpB, {
+        fsAStatObj: fAStat,
+        fsBStatObj: fBStat
+      });
     } else {
-      return (fse.calcCryptHash(fpA, algorithm) === fse.calcCryptHash(fpB, algorithm));
+      return (fse.calcCryptHash(fpA, algorithm, { fsStatObj: fAStat })
+          === fse.calcCryptHash(fpB, algorithm, { fsStatObj: fBStat }));
     }
   }; // }}}
 })();

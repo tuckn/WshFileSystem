@@ -37,6 +37,7 @@ describe('FileSystem', function () {
   var srcTxtUtf16LeBom = path.join(assetsDir, 'src-utf16le.txt');
   var srcTxtUtf8 = path.join(assetsDir, 'src-utf8.txt');
   var srcTxtUtf8Bom = path.join(assetsDir, 'src-utf8-bom.txt');
+  var fileZeroSize = path.join(assetsDir, 'ZeroSizeFile');
   var charsetStrs = [
     '0123456789',
     'abcdefghijklmnopqrstuvwxyz',
@@ -157,25 +158,41 @@ describe('FileSystem', function () {
   });
 
   test('statSync', function () {
-    var stat1 = fs.statSync(__filename);
-    expect(stat1.isFile()).toBe(true);
-    expect(stat1.isDirectory()).toBe(false);
-    expect(stat1.isSymbolicLink()).toBe(false);
+    noneStrVals.forEach(function (val) {
+      expect(fs.existsSync(val)).toBe(false);
+    });
 
-    var stat2 = fs.statSync(__dirname);
-    expect(stat2.isFile()).toBe(false);
-    expect(stat2.isDirectory()).toBe(true);
-    expect(stat2.isSymbolicLink()).toBe(false);
+    var stat;
+
+    // A file
+    stat = fs.statSync(__filename);
+    expect(stat.size).toBeGreaterThan(0);
+    expect(stat.isFile()).toBe(true);
+    expect(stat.isDirectory()).toBe(false);
+    expect(stat.isSymbolicLink()).toBe(false);
+    // @TODO test the xtimes
+
+    // A directory
+    stat = fs.statSync(__dirname);
+    expect(stat.size).toBe(0);
+    expect(stat.isFile()).toBe(false);
+    expect(stat.isDirectory()).toBe(true);
+    expect(stat.isSymbolicLink()).toBe(false);
+    // @TODO test the xtimes
+
+    // The zero size file
+    stat = fs.statSync(fileZeroSize);
+    expect(stat.size).toBe(0);
+    expect(stat.isFile()).toBe(true);
+    expect(stat.isDirectory()).toBe(false);
+    expect(stat.isSymbolicLink()).toBe(false);
+    // @TODO test the xtimes
 
     // @TODO Testing symlink file/directory will be tested at "linkSync()"
     // var s = fs.statSync('D:\\Symlink Dir');
     // console.log(s.isFile());
     // console.log(s.isDirectory());
     // console.log(s.isSymbolicLink());
-
-    noneStrVals.forEach(function (val) {
-      expect(fs.existsSync(val)).toBe(false);
-    });
   });
 
   test('readFileSync', function () {
