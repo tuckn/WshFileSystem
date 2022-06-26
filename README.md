@@ -1,6 +1,6 @@
 # WshFileSystem
 
-Defines Wsh.FileSystem and Wsh.FileSystemExtra objects, and adds functions to handle file and directory. (similar to Node.js-FileSystem).
+Defines `Wsh.FileSystem` and `Wsh.FileSystemExtra` objects, and it contains useful functions to handle files and directories. (similar to Node.js-FileSystem).
 
 ## tuckn/Wsh series dependency
 
@@ -29,7 +29,7 @@ D:\> mkdir MyWshProject
 D:\> cd MyWshProject
 ```
 
-(2) Download this ZIP and unzipping or Use following `git` command.
+(2) Download this ZIP and unzip or Use the following `git` command.
 
 ```console
 > git clone https://github.com/tuckn/WshFileSystem.git ./WshModules/WshFileSystem
@@ -37,12 +37,24 @@ or
 > git submodule add https://github.com/tuckn/WshFileSystem.git ./WshModules/WshFileSystem
 ```
 
-(3) Include _.\\WshFileSystem\\dist\\bundle.js_ into your .wsf file.
-For Example, if your file structure is
+(3) Create your JScript (.js) file. For Example,
 
 ```console
 D:\MyWshProject\
-├─ Run.wsf
+├─ MyScript.js <- Your JScript code will be written in this.
+└─ WshModules\
+    └─ WshFileSystem\
+        └─ dist\
+          └─ bundle.js
+```
+
+I recommend JScript (.js) file encoding to be UTF-8 [BOM, CRLF].
+
+(4) Create your WSF packaging scripts file (.wsf).
+
+```console
+D:\MyWshProject\
+├─ Run.wsf <- WSH entry file
 ├─ MyScript.js
 └─ WshModules\
     └─ WshFileSystem\
@@ -50,7 +62,8 @@ D:\MyWshProject\
           └─ bundle.js
 ```
 
-The content of above _Run.wsf_ is
+And you should include _.../dist/bundle.js_ into the WSF file.
+For Example, The content of the above _Run.wsf_ is
 
 ```xml
 <package>
@@ -61,13 +74,14 @@ The content of above _Run.wsf_ is
 </package>
 ```
 
-I recommend this .wsf file encoding to be UTF-8 [BOM, CRLF].
-This allows the following functions to be used in _.\\MyScript.js_.
+I recommend this WSH file (.wsf) encoding to be UTF-8 [BOM, CRLF].
+
+Awesome! This WSH configuration allows you to use the following functions in JScript (_.\\MyScript.js_).
 
 ## Usage
 
-Now _.\\MyScript.js_ (JScript) can use the useful functions to handle file system.
-for example Wsh.FileSystem,
+Now your JScript (_.\\MyScript.js_ ) can use helper functions to handle files.
+Following are some examples of the use of `Wsh.FileSystem`.
 
 ```js
 var fs = Wsh.FileSystem; // Shorthand
@@ -147,7 +161,7 @@ var tmpPath = fs.writeTmpFileSync('My Temp', { encoding: 'utf8' });
 // and so on...
 ```
 
-for example Wsh.FileSystemExtra,
+Following are some examples of the use of `Wsh.FileSystemExtra`.
 
 ```js
 var fse = Wsh.FileSystemExtra; // Shorthand
@@ -268,12 +282,12 @@ var readArray = fse.readCsvSync('D:\\logs.csv', { encoding: 'utf8' });
 // and so on...
 ```
 
-Many other functions are added.
+Many other functions will be added.
 See the [documentation](https://docs.tuckn.net/WshFileSystem) for more details.
 
 ### Dependency Modules
 
-You can also use the following useful functions in _.\\MyScript.js_ (JScript).
+You can also use the following valuable functions in _.\\MyScript.js_ (JScript).
 
 - [tuckn/WshPolyfill](https://github.com/tuckn/WshPolyfill)
 - [tuckn/WshUtil](https://github.com/tuckn/WshUtil)

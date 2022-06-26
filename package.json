@@ -2,7 +2,7 @@
   "name": "@tuckn/WshFileSystem",
   "description": "Defines Wsh.FileSystem and Wsh.FileSystemExtra objects, and adds functions to handle file and directory. (similar to Node.js-FileSystem).",
   "version": "2.1.0",
-  "author": "Tuckn <tuckn333+github@gmail.com>",
+  "author": "Tuckn <tuckn333@gmail.com>",
   "private": false,
   "license": "MIT",
   "homepage": "https://docs.tuckn.net/WshFileSystem",

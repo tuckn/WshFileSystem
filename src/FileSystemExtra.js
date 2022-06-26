@@ -395,7 +395,7 @@
    * @param {object} [options] - Optional parameters.
    * @param {string} [options.indent=4] - "" to 1 liner code(No line break). See space parameter in {@link https://docs.tuckn.net/WshPolyfill/JSON.html#.stringify|JSON.stringify options}
    * @param {string} [options.lineEnding='\n'] - The character of line-ending.
-   * @param {string} [options.encoding='utf-8'] - utf8(UTF-8), utf16(UTF-16 LE), sjis(Shift_JIS, CP932), All Charset -> HKEY_CLASSES_ROOT\Mime\Database\Charset\
+   * @param {string} [options.encoding='utf-8'] - utf8 (UTF-8), utf16 (UTF-16 LE), sjis (Shift_JIS, CP932), All Charset -> HKEY_CLASSES_ROOT\Mime\Database\Charset\
    * @param {boolean} [options.bom=false] - true => enable, others => disable
    * @returns {void}
    */
