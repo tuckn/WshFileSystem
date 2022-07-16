@@ -27,7 +27,7 @@
   var parseDate = util.createDateString;
   var startsWith = util.startsWith;
   var endsWith = util.endsWith;
-  var srrd = os.surroundPath;
+  var srrd = os.surroundCmdArg;
   var XCOPY = os.exefiles.xcopy;
 
   var fs = Wsh.FileSystem;
@@ -1028,7 +1028,7 @@
     argStr += ' /H /R /Y';
 
     // // debug
-    // console.log(os.convToCmdCommand(mainCmd, argStr, { shell: true }));
+    // console.log(os.convToCmdlineStr(mainCmd, argStr, { shell: true }));
 
     var withStd = obtain(options, 'withStd', false);
     var isDryRun = obtain(options, 'isDryRun', false);

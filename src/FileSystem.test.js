@@ -20,6 +20,7 @@ var fs = Wsh.FileSystem;
 var isString = util.isString;
 var CMD = os.exefiles.cmd;
 var XCOPY = os.exefiles.xcopy;
+var srrd = os.surroundCmdArg;
 
 var _cb = function (fn/* , args */) {
   var args = Array.from(arguments).slice(1);
@@ -521,7 +522,7 @@ describe('FileSystem', function () {
     // dry-run
     retVal = fs.xcopySync(__filename, tmpFilePath, { isDryRun: true });
     expect(retVal).toContain(CMD + ' /S /C"ECHO  F|'
-      + XCOPY + ' ' + __filename + ' ' + tmpFilePath + ' /H /R /Y"');
+      + XCOPY + ' ' + srrd(__filename) + ' ' + srrd(tmpFilePath) + ' /H /R /Y"');
     expect(fs.existsSync(tmpFilePath)).toBe(false);
 
     expect(fs.xcopySync(__filename, tmpFilePath)).toBe(undefined);
@@ -538,7 +539,7 @@ describe('FileSystem', function () {
       isDryRun: true
     });
     expect(retVal).toContain(CMD + ' /S /C"ECHO  F|'
-      + XCOPY + ' ' + __filename + ' ' + tmpFilePath2 + ' /H /R /Y"');
+      + XCOPY + ' ' + srrd(__filename) + ' ' + tmpFilePath2 + ' /H /R /Y"');
     expect(fs.existsSync(tmpFilePath2)).toBe(false);
 
     retVal = fs.xcopySync(__filename, tmpFilePath2, { withStd: true });

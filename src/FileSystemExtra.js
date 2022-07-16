@@ -30,7 +30,7 @@
   var hasContent = util.hasContent;
   var hasIn = util.hasIn;
   var insp = util.inspect;
-  var srrd = os.surroundPath;
+  var srrd = os.surroundCmdArg;
   var CERTUTIL = os.exefiles.certutil;
 
   var fse = Wsh.FileSystemExtra;
