@@ -1082,7 +1082,7 @@ console.log(ctg);
     // var command = 'dir ' + srrd(dirPath) + ' /A:D /B /N /S /O:N';
     var exeCmd = srrd(os.exefiles.cmd) + ' /S /C"' + command + '"';
 
-    var retObj = os.execSync(exeCmd);
+    var retObj = os.shExecSync(exeCmd);
     if (retObj.exitCode !== CD.runs.ok) {
       throw new Error('Error: [ExitCode is not 0]\n'
           + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
@@ -1227,7 +1227,7 @@ console.log(ctg);
        * stderr: ""
        */
 
-      retVal = os.execSync(CERTUTIL, args, {
+      retVal = os.shExecSync(CERTUTIL, args, {
         shell: false,
         isDryRun: isDryRun
       });
@@ -1243,7 +1243,7 @@ console.log(ctg);
       fse.copySync(filepath, tmpFile);
       args = ['-hashfile', tmpFile, algo];
 
-      retVal = os.execSync(CERTUTIL, args, { shell: false });
+      retVal = os.shExecSync(CERTUTIL, args, { shell: false });
       fse.removeSync(tmpFile); // Clean
 
       if (retVal.exitCode !== CD.runs.ok) {

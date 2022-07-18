@@ -850,7 +850,7 @@
       args = args.concat(['/B', '/N', '/S', '/O:N']);
     }
 
-    var retObj = os.execSync(mainCmd, args, { shell: true });
+    var retObj = os.shExecSync(mainCmd, args, { shell: true });
     if (retObj.exitCode !== CD.runs.ok) {
       throw new Error('Error: [Error Exit Code]\n'
         + '  at ' + FN + ' (' + MODULE_TITLE + ')\n'
@@ -1035,7 +1035,7 @@
     var retVal;
 
     if (!withStd) {
-      retVal = os.runSync(mainCmd, argStr, {
+      retVal = os.shRunSync(mainCmd, argStr, {
         shell: true,
         winStyle: 'hidden',
         isDryRun: isDryRun
@@ -1046,7 +1046,7 @@
 
       throw new Error('Error [ExitCode is not Ok] "' + retVal + '"\n');
     } else {
-      retVal = os.execSync(mainCmd, argStr, {
+      retVal = os.shExecSync(mainCmd, argStr, {
         shell: true,
         isDryRun: isDryRun
       });
@@ -1099,7 +1099,7 @@
       try {
         if (!endsWith(dirPath, path.sep)) dirPath += path.sep;
 
-        var retVal = os.runSync('rmdir', ['/S', '/Q', dirPath], {
+        var retVal = os.shRunSync('rmdir', ['/S', '/Q', dirPath], {
           shell: true,
           winStyle: 'hidden'
         });
