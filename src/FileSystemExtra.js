@@ -393,7 +393,7 @@
    * @param {string} fpJson - The destination JSON path.
    * @param {object} obj - The object to write.
    * @param {object} [options] - Optional parameters.
-   * @param {string} [options.indent=4] - "" to 1 liner code(No line break). See space parameter in {@link https://docs.tuckn.net/WshPolyfill/JSON.html#.stringify|JSON.stringify options}
+   * @param {string} [options.indent=4] - "" to 1 liner code(No line break). See space parameter in {@link https://tuckn.net/docs/WshPolyfill/JSON.html#.stringify|JSON.stringify options}
    * @param {string} [options.lineEnding='\n'] - The character of line-ending.
    * @param {string} [options.encoding='utf-8'] - utf8 (UTF-8), utf16 (UTF-16 LE), sjis (Shift_JIS, CP932), All Charset -> HKEY_CLASSES_ROOT\Mime\Database\Charset\
    * @param {boolean} [options.bom=false] - true => enable, others => disable
@@ -479,7 +479,7 @@
    * @memberof Wsh.FileSystemExtra
    * @param {string} csvpath - The destination CSV path.
    * @param {Array} arrays - The Array to write.
-   * @param {object} [options] - See {@link https://docs.tuckn.net/WshUtil/Wsh.Util.html#.stringify2DArrayToCsv|Wsh.Util.stringify2DArrayToCsv options} and {@link Wsh.FileSystem.writeFileSync options}.
+   * @param {object} [options] - See {@link https://tuckn.net/docs/WshUtil/Wsh.Util.html#.stringify2DArrayToCsv|Wsh.Util.stringify2DArrayToCsv options} and {@link Wsh.FileSystem.writeFileSync options}.
    * @param {string} [options.encoding='utf-8'] - latin1 (iso-8859-1), utf8, utf16, sjis (shift_jis, cp932), All Charset -> HKEY_CLASSES_ROOT\Mime\Database\Charset\
    * @param {boolean} [options.bom=true] - true => enable, others => disable
    * @returns {void}
@@ -513,7 +513,7 @@
    * @function readCsvSync
    * @memberof Wsh.FileSystemExtra
    * @param {string} csvpath - The CSV file path to read.
-   * @param {object} [options] - See {@link Wsh.FileSystem.readFileSync options} and {@link https://docs.tuckn.net/WshUtil/Wsh.Util.html#.parseCsvTo2DArray|Wsh.Util.parseCsvTo2DArray options}
+   * @param {object} [options] - See {@link Wsh.FileSystem.readFileSync options} and {@link https://tuckn.net/docs/WshUtil/Wsh.Util.html#.parseCsvTo2DArray|Wsh.Util.parseCsvTo2DArray options}
    * @param {string} [options.encoding='utf-8'] - latin1 (iso-8859-1), utf8, utf16, sjis (shift_jis, cp932), All Charset -> HKEY_CLASSES_ROOT\Mime\Database\Charset\
    * @returns {Array} - The read array.
    */
@@ -613,7 +613,7 @@
    * @function readCsvFileAsAssocArray
    * @memberof Wsh.FileSystemExtra
    * @param {string} csvpath - The CSV Filepath to read.
-   * @param {object} [options] - See {@link Wsh.FileSystem.readCsvSync options} and {@link https://docs.tuckn.net/WshUtil/Wsh.Util.html#.conv2DArrayToObj|Wsh.Util.conv2DArrayToObj options}.
+   * @param {object} [options] - See {@link Wsh.FileSystem.readCsvSync options} and {@link https://tuckn.net/docs/WshUtil/Wsh.Util.html#.conv2DArrayToObj|Wsh.Util.conv2DArrayToObj options}.
    * @returns {Array} - The array of objects.
    */
   fse.readCsvFileAsAssocArray = function (csvpath, options) {

@@ -1008,7 +1008,7 @@
    * @param {object} [options] - Optional parameters.
    * @param {boolean} [options.withStd=false]
    * @param {boolean} [options.isDryRun=false] - No execute, returns the string of command.
-   * @returns {void|typeExecSyncReturn|string} - If withStd is true returns {@link https://docs.tuckn.net/WshUtil/Wsh.Constants.windowStyles.html|Wsh.OS.typeExecSyncReturn} or if isDryRun is true, returns string.
+   * @returns {void|typeExecSyncReturn|string} - If withStd is true returns {@link https://tuckn.net/docs/WshUtil/Wsh.Constants.windowStyles.html|Wsh.OS.typeExecSyncReturn} or if isDryRun is true, returns string.
    */
   fs.xcopySync = function (src, dest, options) {
     var FN = 'fs.xcopySync';

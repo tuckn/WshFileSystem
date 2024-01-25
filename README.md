@@ -13,7 +13,7 @@ Defines `Wsh.FileSystem` and `Wsh.FileSystemExtra` objects, and it contains usef
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshOS](https://github.com/tuckn/WshOS)  
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshPath](https://github.com/tuckn/WshPath)  
 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshUtil](https://github.com/tuckn/WshUtil)  
-&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshPolyfill](https://github.com/tuckn/WshPolyfill)  
+&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;└─ [WshPolyfill](https://github.com/tuckn/WshPolyfill)
 
 The upper layer module can use all the functions of the lower layer module.
 
@@ -284,7 +284,7 @@ var readArray = fse.readCsvSync('D:\\logs.csv', { encoding: 'utf8' });
 ```
 
 Many other functions will be added.
-See the [documentation](https://docs.tuckn.net/WshFileSystem) for more details.
+See the [documentation](https://tuckn.net/docs/WshFileSystem/) for more details.
 
 ### Dependency Modules
 
@@ -297,12 +297,12 @@ You can also use the following valuable functions in _.\\MyScript.js_ (JScript).
 
 ## Documentation
 
-See all specifications [here](https://docs.tuckn.net/WshFileSystem) and also below.
+See all specifications [here](https://tuckn.net/docs/WshFileSystem/) and also below.
 
-- [WshPolyfill](https://docs.tuckn.net/WshPolyfill)
-- [WshUtil](https://docs.tuckn.net/WshUtil)
-- [WshPath](https://docs.tuckn.net/WshPath)
-- [WshOS](https://docs.tuckn.net/WshOS)
+- [WshPolyfill](https://tuckn.net/docs/WshPolyfill/)
+- [WshUtil](https://tuckn.net/docs/WshUtil/)
+- [WshPath](https://tuckn.net/docs/WshPath/)
+- [WshOS](https://tuckn.net/docs/WshOS/)
 
 ## License
 
